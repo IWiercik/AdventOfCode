@@ -6,6 +6,7 @@ function syncReadFile(filename) {
   const arr = contents.replace(/\r/g, "").trim().split("\n\n");
   return arr;
 }
+//PART1
 const gettingElves = (array) => {
   const elves = [];
   let biggestElf = {
@@ -15,8 +16,12 @@ const gettingElves = (array) => {
   array.forEach((elf, index) => {
     const eachElf = elf.split("\n").map(Number);
     const sumOfFood = eachElf.reduce((previous, current) => previous + current);
+    elves.push({
+      id: index,
+      food: sumOfFood,
+    });
     if (biggestElf.food < sumOfFood || !biggestElf.food) {
-      biggestElf.id == index;
+      biggestElf.id = index;
       biggestElf.food = sumOfFood;
     }
   });
@@ -24,4 +29,6 @@ const gettingElves = (array) => {
 };
 
 const downloadedData = syncReadFile(dataPath);
-console.log(gettingElves(downloadedData));
+const elves = gettingElves(downloadedData)[0];
+const biggestElf = gettingElves(downloadedData)[1];
+
