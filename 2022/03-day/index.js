@@ -1,3 +1,4 @@
+const { group } = require("console");
 const { readFileSync, promises: fsPromises } = require("fs");
 const dataPath = "./data.txt";
 //Getting Data from TXT
@@ -7,7 +8,7 @@ function syncReadFile(filename) {
   return string;
 }
 const downloadedData = syncReadFile(dataPath);
-
+// Part One
 function rearrangementItems(array) {
   const letters = [];
   array.forEach((item) => {
@@ -53,4 +54,36 @@ function gettingSum(array) {
   return sum;
 }
 const letters = rearrangementItems(downloadedData);
+console.log(letters);
 console.log(gettingSum(letters));
+
+// PART 2
+
+const gettingBadges = (array) => {
+  let badges = [];
+  //Getting group
+  const groups = [];
+  const itemsPerArray = 3;
+  for (let i = 0; i < array.length; i += itemsPerArray) {
+    groups.push(array.slice(i, i + itemsPerArray));
+  }
+
+  //Getting Badges
+  for (let groupI = 0; groupI < groups.length; groupI++) {
+    let charThatRepeat = "";
+    const group = groups[groupI].sort((a, b) => a.length - b.length);
+    const shortestElement = group[0];
+    const secondElement = group[1];
+    const thirdElement = group[2];
+    for (let i = 0; i < shortestElement.length; i++) {
+      const charOfSmallest = shortestElement[i];
+      if (secondElement.includes(charOfSmallest) && thirdElement.includes(charOfSmallest))
+        charThatRepeat = charOfSmallest;
+    }
+    badges.push(charThatRepeat);
+  }
+  return badges;
+};
+
+const badgesLetters = gettingBadges(downloadedData);
+console.log(gettingSum(badgesLetters));
