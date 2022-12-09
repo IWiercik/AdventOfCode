@@ -12,56 +12,74 @@ function strategy(downloadedData) {
   //First we changed weirdSignature to normal values paper,rock,scissors
   let data = downloadedData;
   const schema = {
-    A: "Rock,", // we use comma to split it later
-    B: "Paper,",
-    C: "Scissors,",
-    X: "Rock,",
-    Y: "Paper,",
-    Z: "Scissors,",
+    A: "rock,", // we use comma to split it later
+    B: "paper,",
+    C: "scissors,",
+    X: "lose,",
+    Y: "draw,",
+    Z: "win,",
   };
   data = data.replace(/A|B|C|X|Y|Z/g, (matched) => schema[matched]);
   data = data.split(",");
   data = data.slice(0, -1); // remove last comma
-  
   //Next we take out the enemy and user shapes
   const opponentShapes = [];
-  const myShapes = [];
+  const resultsOfRounds = [];
   for (let i = 0; i < data.length; i++) {
     if (i % 2) {
-      myShapes.push(data[i]);
+      resultsOfRounds.push(data[i]);
     } else opponentShapes.push(data[i]);
   }
 
   // Rounds and couting points
+
+  //points
   let userPoints = 0;
   const pointsWages = {
     rock: 1,
     paper: 2,
     scissors: 3,
   };
+
+  //counters
+  const shapes = {
+    rock: {
+      draw: "rock",
+      loseAgainst: "paper",
+      winAgainst: "scissors",
+    },
+    paper: {
+      draw: "paper",
+      winAgainst: "rock",
+      loseAgainst: "scissors",
+    },
+    scissors: {
+      draw: "scissors",
+      winAgainst: "paper",
+      loseAgainst: "rock",
+    },
+  };
+
+  //Rounds
   for (let round = 0; round < opponentShapes.length; round++) {
     let pointsForRound = 0;
     const enemyShape = opponentShapes[round];
-    const userShape = myShapes[round];
-    //Getting Points
-    switch (userShape) {
-      case "Paper":
-        pointsForRound += 2;
-        if (enemyShape == "Rock") pointsForRound += 6; // win for user
+    const resultOfRound = resultsOfRounds[round];
+    let userShape;
+    switch (resultOfRound) {
+      case "win":
+        userShape = shapes[enemyShape].loseAgainst;
+        pointsForRound += 6;
         break;
-      case "Rock":
-        pointsForRound += 1;
-        if (enemyShape == "Scissors") pointsForRound += 6; // win for user
-        break;
-      case "Scissors":
+      case "draw":
+        userShape = shapes[enemyShape].draw;
         pointsForRound += 3;
-        if (enemyShape == "Paper") pointsForRound += 6; // win for user
         break;
-      default:
-        console.log("something went wrong!");
+      case "lose":
+        userShape = shapes[enemyShape].winAgainst;
         break;
     }
-    if (enemyShape == userShape) pointsForRound += 3; // draw
+    userPoints += pointsWages[userShape];
     userPoints += pointsForRound;
   }
   console.log(userPoints);
