@@ -13,8 +13,8 @@ const downloadedData = syncReadFile(dataPath);
 let firstMarker;
 for (let index = 0; index < downloadedData.length; index++) {
   // increasing char by 1  but checking with 4 chars
-    if (!hasRepeats(downloadedData.slice(index, index + 4))) {
-      firstMarker = index+4;
+    if (!hasRepeats(downloadedData.slice(index, index + 14))) {
+      firstMarker = index+14;
       break;
     }
 }
