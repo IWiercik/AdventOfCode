@@ -33,11 +33,19 @@ const changingColumnRowString = (array) => {
 const downloadedData = syncReadFile(dataPath);
 const operations = downloadedData[0];
 let crates = downloadedData[1].map((item) => [...item]);
-function moveOperation(amount, from, to) {
+function moveOperation(amount, fromArg, toArg) {
+  let from = fromArg - 1; // -1 casue array start from 0
+  let to = toArg - 1;
   // amount of elements we take
-  for (let i = 1; i <= amount; i++) {
-    crates[to - 1].unshift(crates[from - 1][0]); // adding every first element from 'from'  (we use -1 cause array start from 0)
-    crates[from - 1].shift();
+  if (amount == 1) {
+    crates[to].unshift(crates[from][0]); // adding every element on top of crate
+    crates[from].shift();
+  } else {
+    for (let i = 1; i <= amount; i++) {
+      const lastElementIndex = amount - i;
+      crates[to].unshift(crates[from][lastElementIndex]); // adding deppest crate from amount taked
+      crates[from] = crates[from].filter((item,index) => index !=lastElementIndex);
+    }
   }
 }
 
@@ -50,6 +58,7 @@ const popOperations = (operations) => {
     moveOperation(amount, from, to);
   });
 };
+
 popOperations(operations);
 const everyFistItem = crates.map((item) => item[0]);
 console.log(everyFistItem);
