@@ -20,80 +20,62 @@ function getting2DArray(data) {
 const array2D = getting2DArray(downloadedData);
 
 const countingTree = () => {
-  let counter = 0;
+  let highestScore = 0;
   array2D.forEach((row, y) => {
     // x,y coordinates
     row.forEach((rowElement, x) => {
-      if (y == 0 || y == row.length - 1 || x == 0 || x == row.length - 1) {
-        // border of square
-        counter++;
-      } else {
-        //middle of square;
-
-        // Checking  directions and if one of them is correct we just return and not check other ones
-        if (checkingXSide("north", rowElement, x, y)) return counter++;
-        if (checkingXSide("east", rowElement, x, y)) return counter++;
-        if (checkingXSide("south", rowElement, x, y)) return counter++;
-        if (checkingXSide("west", rowElement, x, y)) return counter++;
+      // not border
+      if (!(y == 0 || y == row.length - 1 || x == 0 || x == row.length - 1)) {
+        // middle of square
+        let score = 1;
+        score *= checkingXSide("north", rowElement, x, y);
+        score *= checkingXSide("east", rowElement, x, y);
+        score *= checkingXSide("south", rowElement, x, y);
+        score *= checkingXSide("west", rowElement, x, y);
+        if (score > highestScore) highestScore = score;
       }
     });
   });
-  console.log(counter);
+  console.log(highestScore);
 };
 function checkingXSide(side, element, x, y) {
-    let isVisible = true;
-    console.log(`Element:${element}(x:${x},y:${y})`);
-    switch (side) {
-      case "north":
-          do {
-            y -= 1;
-            const itemInYPositionHigher = array2D[y][x];
-            if (itemInYPositionHigher < element) isVisible = true;
-            else {
-              isVisible = false;
-              break;
-            }
-          } while (y != 0);
-        break;
-      case "south":
-          do {
-            y += 1;
-            const itemInYPositionLower = array2D[y][x];
-            if (itemInYPositionLower < element) isVisible = true;
-            else {
-              isVisible = false;
-              break;
-            }
-          } while (y != array2D.length - 1);
-        break;
-      case "east":
-          do {
-            x -= 1;
-            const itemInXPositionLower = array2D[y][x];
-            if (itemInXPositionLower < element) isVisible = true;
-            else {
-              isVisible = false;
-              break;
-            }
-          } while (x != 0);
-        break;
-      case "west":
-        do {
-          x += 1;
-          const itemInXPositionHigher = array2D[y][x];
-          if (itemInXPositionHigher < element) isVisible = true;
-          else {
-            isVisible = false;
-            break;
-          }
-        } while (x != array2D.length - 1);
-        break;
-      default:
-        isVisible = "something went wrong!";
-    }
-    return isVisible;
+  let amountOfTreeCanSee = 0;
+  switch (side) {
+    case "north":
+      do {
+        y -= 1;
+        const itemInYPositionHigher = array2D[y][x];
+        amountOfTreeCanSee += 1;
+        if (itemInYPositionHigher >= element) break;
+      } while (y != 0);
+      break;
+    case "south":
+      do {
+        y += 1;
+        const itemInYPositionLower = array2D[y][x];
+        amountOfTreeCanSee += 1;
+        if (itemInYPositionLower >= element) break;
+      } while (y != array2D.length - 1);
+      break;
+    case "east":
+      do {
+        x -= 1;
+        const itemInXPositionLower = array2D[y][x];
+        amountOfTreeCanSee += 1;
+        if (itemInXPositionLower >= element) break;
+      } while (x != 0);
+      break;
+    case "west":
+      do {
+        x += 1;
+        const itemInXPositionHigher = array2D[y][x];
+        amountOfTreeCanSee += 1;
+        if (itemInXPositionHigher >= element) break;
+      } while (x != array2D.length - 1);
+      break;
+    default:
+      console.error("something went wrong!");
   }
-function partOne() {
-  countingTree();
+  return amountOfTreeCanSee;
 }
-partOne();
+countingTree();
