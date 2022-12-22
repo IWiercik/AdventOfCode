@@ -66,35 +66,28 @@ function creatingMonkeys() {
 }
 
 const cageOfMonkeys = creatingMonkeys();
-function itemShuffeling() {
+function itemShuffeling(divider) {
   for (let i = 0; i < cageOfMonkeys.length; i++) {
     const monkey = cageOfMonkeys[i];
     let amountsOfMonkeyItems = monkey.items.length;
     while (amountsOfMonkeyItems > 0) {
-      console.log("WORRY LEVEL BEFORE:" + monkey.items[0]);
-      const worryAfterOperation = Math.floor(eval(monkey.operation.replaceAll("old", monkey.items[0])) / 3);
-      console.log("WORRY LEVEL AFTER:" + worryAfterOperation);
-      console.log("IS DIVISBLE? BY:" + monkey.test);
+      let worryAfterOperation = Math.floor(eval(monkey.operation.replaceAll("old", monkey.items[0])) % divider);
       monkey.items.shift();
       if (worryAfterOperation % monkey.test == 0) {
         const toMonkey = monkey.iftrue;
-        console.log("ISDIVISBLE");
         cageOfMonkeys[toMonkey].items.push(worryAfterOperation);
-        console.log("GOT MONKEY" + toMonkey);
       } else {
         const toMonkey = monkey.iffalse;
-        console.log("IS NOT DIVISIBLE");
         cageOfMonkeys[toMonkey].items.push(worryAfterOperation);
-        console.log("GOT MONKEY" + toMonkey);
       }
-      console.log("\n----------------------------------------");
       amountsOfMonkeyItems--;
       monkey.amountsOfItemsInspected++;
     }
   }
 }
 function repeatXTimesAndGetMonkeyBusiness(amountOfRound) {
-  for (let i = 0; i < amountOfRound; i++) itemShuffeling();
+  const divider = cageOfMonkeys.map(item => item.test).reduce((a,b) => a*b);
+  for (let i = 0; i < amountOfRound; i++) itemShuffeling(divider);
   //Getting two biggest Monkeys
   const inspectedItems = cageOfMonkeys.map((monkey) => monkey.amountsOfItemsInspected);
   const highestOne = Math.max(...inspectedItems);
@@ -102,6 +95,8 @@ function repeatXTimesAndGetMonkeyBusiness(amountOfRound) {
   inspectedItems.forEach((number) => {
     if (number > secondHighest && number < highestOne) secondHighest = number;
   });
+  console.log(cageOfMonkeys);
+  console.log(highestOne, secondHighest);
   return highestOne * secondHighest;
 }
-console.log(repeatXTimesAndGetMonkeyBusiness(20));
+console.log(repeatXTimesAndGetMonkeyBusiness(10000));
